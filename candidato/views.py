@@ -1,33 +1,46 @@
 from django.shortcuts import render
 from rest_framework import generics
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
-import requests
-from xml.etree import ElementTree
+from .funcoes import carregar_grupos_atendimento, apto
 
 from .models import Candidato, GrupoAtendimento
 from .serializers import CandidatoSerializer, GrupoAtendimentoSerializer
 
-def carregar_grupos_atendimento():
-    url_xml = 'https://selecoes.lais.huol.ufrn.br/media/grupos_atendimento.xml'
-    response = requests.get(url_xml)
 
-    if response.status_code == 200:
-        root = ElementTree.fromstring(response.text)
+class CandidatoListCreateView(APIView):
+    def get(self, request):
+        queryset = Candidato.objects.all()
+        serializer_class = CandidatoSerializer(queryset, many=True)
+        return Response(serializer_class.data)
+    
+    def post(self, request):
+        serializer = CandidatoSerializer(data=request.data)
+        if serializer.is_valid():
 
-        for grupo_element in root.findall('grupoatendimento'):
-            nome_grupo = grupo_element.find('nome').text
-            _, created = GrupoAtendimento.objects.get_or_create(nome = nome_grupo)
+            dicionario = carregar_grupos_atendimento()
+            grupos = dicionario['grupos']['grupoatendimento']
 
+            for grupo in grupos:
+                nome = grupo['nome']
+                _, created = GrupoAtendimento.objects.get_or_create(nome=nome)
 
+            serializer.save()
 
-class CandidatoListCreateView(generics.ListCreateAPIView):
+            cantidato = Candidato.objects.last()
+            resposta = apto(cantidato)
 
-    carregar_grupos_atendimento()
+            dados = {
+                'Registro': serializer.data,
+                'Aptidao': resposta
+            }
 
-    queryset = Candidato.objects.all()
-    serializer_class = CandidatoSerializer
-
+            return Response(dados, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GrupoAtendimentoListView(generics.ListAPIView):
+
     queryset = GrupoAtendimento.objects.all()
     serializer_class = GrupoAtendimentoSerializer

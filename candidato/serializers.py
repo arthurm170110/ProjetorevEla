@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from .models import Candidato, GrupoAtendimento
+from .validators import cpf_valido
 
 
 class GrupoAtendimentoSerializer(serializers.ModelSerializer):
@@ -14,3 +16,7 @@ class CandidatoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Candidato
         fields = '__all__'
+
+    def validate(self, data):
+        cpf_valido(data['cpf'])
+        return data
