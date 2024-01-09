@@ -30,29 +30,43 @@ def candidatos(request):
 
         validacao = cadastro_valido(cpf, data_nascimento, senha, confirma_senha)
 
+
         if validacao:
-            return render(request, 'candidato.html')
+            dicionario = carregar_grupos_atendimento()
+            grupos = dicionario['grupos']['grupoatendimento']
+            dados = {
+                "mensagens_de_erro": validacao,
+                "grupoatendimento": grupos,
+                "campos": {
+                    'nome': nome,
+                    'cpf': cpf,
+                    'data_nascimento': data_nascimento,
+                    'covid': covid,
+                    'grupoAtendimento': grupo_atendimento_str,
+                }
+            }
+            return render(request, 'candidato.html', dados)
 
-        candidato = Candidato(
+        # candidato = Candidato(
 
-            nome = nome,
-            cpf = cpf,
-            data_nascimento = data_nascimento,
-            covid= covid,
-            senha = senha
-        )
+        #     nome = nome,
+        #     cpf = cpf,
+        #     data_nascimento = data_nascimento,
+        #     covid= covid,
+        #     senha = senha
+        # )
 
-        candidato.save()
+        # candidato.save()
 
-        dicionario = carregar_grupos_atendimento()
-        grupos = dicionario['grupos']['grupoatendimento']
+        # dicionario = carregar_grupos_atendimento()
+        # grupos = dicionario['grupos']['grupoatendimento']
 
-        for grupo in grupos:
-            nome = grupo['nome']
-            _, created = GrupoAtendimento.objects.get_or_create(nome=nome)
+        # for grupo in grupos:
+        #     nome = grupo['nome']
+        #     _, created = GrupoAtendimento.objects.get_or_create(nome=nome)
 
-        candidato.grupo_atendimento.set(grupo_atendimento)
+        # candidato.grupo_atendimento.set(grupo_atendimento)
 
-        return HttpResponse('teste')
+        return HttpResponse('Segundo return')
     
 

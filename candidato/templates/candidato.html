@@ -6,57 +6,98 @@
 {% endblock %}
 
 {% block 'dashboard' %}
-<div class="container">
-    <div class="row">
-
-        <div class="col-md card-dashboard" >
-            <p class="text-card">Cadastro do Candidato</p>
-        </div>
-    </div>
-
-    <div class="cadastrar-candidato">
-        <form action="{% url 'candidatos' %}" method="POST">
-            {% csrf_token %}
-            <br>
-            <div class="row">
-                <div class="col-md">
-                    <p>Nome Completo:</p>
-                    <input type="text" class="form-control" placeholder="Nome Completo" name="nome">
-                </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md card-dashboard" >
+                <p class="text-card">Cadastro do Candidato</p>
             </div>
-            <br>
-            <p>CPF:</p>
-            <input type="text" class="form-control" placeholder="___.___.___-__" name="cpf">
-            <br>
-            <p>Data de Nascimento:</p>
-            <input type="date" class="form-control" placeholder="dd/mm/aaaa" name="data_nascimento">
-            <br>
-            <p>Teve covid nos últimos 30 dias?</p>
-            <select type="date" class="form-control" name="covid">
-                <option value="False">Não</option>
-                <option value="True">Sim</option> 
-            </select>
-            <br>
-            <div class="form-group">
-                <label for="grupoAtendimento">Selecione um ou mais grupo de atendimento, se houver</label>
-                <select multiple class="form-control" name="grupo_atendimento" id="grupoAtendimento">
-                    {% for grupo in grupoatendimento %}
-                    <option value="{{ forloop.counter }}">{{ forloop.counter }}-{{ grupo.nome }}</option>
-                    {% endfor %}
-                </select>
-              </div>
-            <p>Senha:</p>
-            <input type="text" class="form-control" name="senha">
-            <br>
-            <p>Confirmar Senha:</p>
-            <input type="text" class="form-control" name="confirma_senha">
-            <br>
-            <input type="submit" value="Cadastrar" class="btn btn-lg btn-block btn-primary">
-  
-        </form>
-        
-    </div>
+        </div>
 
-</div>
-<script src="{% static 'candidato/js/candidato.js' %}"></script>
+        <div class="cadastrar-candidato">
+            <form action="{% url 'candidatos' %}" method="POST">
+                {% csrf_token %}
+                <br>
+                <div class="row">
+                    <div class="col-md">
+                        <p>Nome Completo:</p>
+                        <input type="text" class="form-control" placeholder="Nome Completo" name="nome" ame="nome" value="{% if campos %}{{ campos.nome }}{% endif %}" required>
+                    </div>
+                </div>
+                <br>
+                <p>CPF:</p>
+                <input type="text" {% if mensagens_de_erro %} {% for mensagem in mensagens_de_erro %}{% if mensagem.CPF %}style="border-color: red;"{% endif %} {% endfor %}{% endif %} class="form-control" placeholder="___.___.___-__" name="cpf" value="{% if campos %}{{ campos.cpf }}{% endif %}" required>
+                {% if mensagens_de_erro %}
+                    {% for mensagem in mensagens_de_erro %}
+                        {% if mensagem.CPF %}
+                            <br>
+                            <div class="alert alert-danger" role="alert">
+                                {{mensagem.CPF}}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                <br>
+                <p>Data de Nascimento:</p>
+                <input type="date" {% if mensagens_de_erro %} {% for mensagem in mensagens_de_erro %}{% if mensagem.data_nascimento %}style="border-color: red;"{% endif %} {% endfor %}{% endif %} class="form-control" placeholder="dd/mm/aaaa" name="data_nascimento" value="{% if campos %}{{ campos.data_nascimento }}{% endif %}" required>
+                {% if mensagens_de_erro %}
+                    {% for mensagem in mensagens_de_erro %}
+                        {% if mensagem.data_nascimento %}
+                            <br>
+                            <div class="alert alert-danger" role="alert">
+                                {{mensagem.data_nascimento}}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                <br>
+                <p>Teve covid nos últimos 30 dias?</p>
+                <select type="date" class="form-control" name="covid" value="{{campos.covid}}" required>
+                    <option value="False">Não</option>
+                    <option value="True">Sim</option> 
+                </select>
+                <br>
+                <div class="form-group">
+                    <label for="grupoAtendimento">Selecione um ou mais grupo de atendimento, se houver</label>
+                    <select multiple class="form-control" name="grupo_atendimento" id="grupoAtendimento">
+                        {% for grupo in grupoatendimento %}
+                            <option value="{{ forloop.counter }}">{{ forloop.counter }}-{{ grupo.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <p>Senha:</p>
+                <input type="password" {% if mensagens_de_erro %} {% for mensagem in mensagens_de_erro %}{% if mensagem.senha %}style="border-color: red;"{% endif %} {% endfor %}{% endif %} class="form-control" name="senha" required>
+                {% if mensagens_de_erro %}
+                    {% for mensagem in mensagens_de_erro %}
+                        {% if mensagem.senha %}
+                            <br>
+                            {% for erros in mensagem.senha %}
+                            <div class="alert alert-danger" role="alert">
+                                {{erros}}
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                <br>
+                <p>Confirmar Senha:</p>
+                <input type="password" {% if mensagens_de_erro %} {% for mensagem in mensagens_de_erro %}{% if mensagem.confirma_senha %}style="border-color: red;"{% endif %} {% endfor %}{% endif %} class="form-control" name="confirma_senha" required>
+                {% if mensagens_de_erro %}
+                    {% for mensagem in mensagens_de_erro %}
+                        {% if mensagem.confirma_senha %}
+                            <br>
+                            <div class="alert alert-danger" role="alert">
+                                {{mensagem.confirma_senha}}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                <br>
+                <input type="submit" value="Cadastrar" class="btn btn-lg btn-block btn-primary">
+
+            </form>
+            
+        </div>
+
+    </div>
+    <script src="{% static 'candidato/js/candidato.js' %}"></script>
 {% endblock %}

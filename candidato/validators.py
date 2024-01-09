@@ -14,7 +14,6 @@ def cpf_valido(cpf):
         return 'CPF inválido.'
     if Candidato.objects.filter(cpf=cpf).exists():
         return 'Este CPF já foi cadastrado.'
-    return True
 
 def data_nascimento_valida(data_nascimento):
     data_nascimento_str = data_nascimento
@@ -24,7 +23,6 @@ def data_nascimento_valida(data_nascimento):
     diferenca_anos = (timezone.now().date() - data_nascimento).days // 365
     if diferenca_anos >= 120:
         return 'A idade não está dentro do intervalo permitido, de até 120 anos.'
-    return True
 
 def senha_valida(senha):
     erros = []
@@ -44,31 +42,29 @@ def senha_valida(senha):
     if not re.search(r'[!@#$%^&*(),.?":{}|<>]', senha):
         erros.append('A senha deve possuir pelo menos uma caracter especial.')
 
-    if len(erros) != 0:
-        return erros
-    else:
-        return True
+    return erros
     
 def confirma_senha_valida(senha, confirma_senha):
     if senha != confirma_senha:
         return 'A senha deve ser igual.'
-    return True
 
 def cadastro_valido(cpf, data_nascimento, senha, confirma_senha):
     mensagens_erro = []
 
-    if not cpf_valido(cpf):
+    if cpf_valido(cpf):
         mensagens_erro.append({'CPF': cpf_valido(cpf)})
 
-    if not data_nascimento_valida(data_nascimento):
+    if data_nascimento_valida(data_nascimento):
         mensagens_erro.append({'data_nascimento': data_nascimento_valida(data_nascimento)})
 
-    if not senha_valida(senha):
+    if senha_valida(senha):
         mensagens_erro.append({'senha': senha_valida(senha)})
 
-    if not confirma_senha_valida(senha, confirma_senha):
+    if confirma_senha_valida(senha, confirma_senha):
         mensagens_erro.append({'confirma_senha': confirma_senha_valida(senha, confirma_senha)})
 
     
+    
     return mensagens_erro
+    
    
