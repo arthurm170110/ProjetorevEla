@@ -12,7 +12,7 @@ def cpf_valido(cpf):
     numero_cpf = CPF()
     if not numero_cpf.validate(cpf):
         return 'CPF inválido.'
-    if Candidato.objects.filter(cpf=cpf).exists():
+    if Candidato.objects.filter(username=cpf).exists():
         return 'Este CPF já foi cadastrado.'
 
 def data_nascimento_valida(data_nascimento):

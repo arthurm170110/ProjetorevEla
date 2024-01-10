@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class GrupoAtendimento(models.Model):
     nome = models.CharField(max_length=100)
@@ -6,13 +7,11 @@ class GrupoAtendimento(models.Model):
     def __str__(self) -> str:
         return str(self.nome) 
 
-class Candidato(models.Model):
+class Candidato(User):
     nome = models.CharField(max_length=120)
-    cpf = models.CharField(max_length=15, unique=True)
     data_nascimento = models.DateField()
     grupo_atendimento = models.ManyToManyField(GrupoAtendimento, blank=True)
     covid = models.BooleanField(default=False)
-    senha = models.CharField(max_length=255)
 
     def __str__(self) -> str:
         return str(self.nome)

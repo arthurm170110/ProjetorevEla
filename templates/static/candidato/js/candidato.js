@@ -1,9 +1,20 @@
-// function add_carro(){
 
-//     container = document.getElementById("form-carro")
+document.addEventListener('DOMContentLoaded', function() {
+    var select = document.getElementById('grupoAtendimento');
 
-//     html = "<br><div class='row'> <div class='col-md'> <input type='text' placeholder='carro' class='form-control' name=""></div> <div class='col-md'><input type='text' placeholder='Placa' class='form-control'> </div></div>"
+    select.addEventListener('mousedown', function(e) {
+        e.preventDefault();
 
-//     container.innerHTML += html
+        var scroll = select.scrollTop;
 
-// }
+        e.target.selected = !e.target.selected;
+
+        setTimeout(function() {select.scrollTop = scroll;}, 0);
+
+        select.focus();
+    });
+
+    select.addEventListener('mousemove', function(e) {
+        e.preventDefault();
+    });
+});

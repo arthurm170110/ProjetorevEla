@@ -1,16 +1,18 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.http import HttpResponse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 from .utils import carregar_grupos_atendimento, apto
 from .validators import cadastro_valido
 
 from .models import Candidato, GrupoAtendimento
 
+
 def paginainicial(request):
     return render(request, 'paginainicial.html')
 
-# def cadastrar(request):
-#     return render(request, 'cadastro.html')
 
 def candidatos(request):
     if request.method == "GET":
@@ -47,26 +49,56 @@ def candidatos(request):
             }
             return render(request, 'candidato.html', dados)
 
-        # candidato = Candidato(
+        candidato = Candidato.objects.create_user(
 
-        #     nome = nome,
-        #     cpf = cpf,
-        #     data_nascimento = data_nascimento,
-        #     covid= covid,
-        #     senha = senha
-        # )
+            nome = nome,
+            username = cpf,
+            data_nascimento = data_nascimento,
+            covid= covid,
+            password = senha
+        )
 
-        # candidato.save()
+        candidato.save()
 
-        # dicionario = carregar_grupos_atendimento()
-        # grupos = dicionario['grupos']['grupoatendimento']
+        dicionario = carregar_grupos_atendimento()
+        grupos = dicionario['grupos']['grupoatendimento']
 
-        # for grupo in grupos:
-        #     nome = grupo['nome']
-        #     _, created = GrupoAtendimento.objects.get_or_create(nome=nome)
+        for grupo in grupos:
+            nome = grupo['nome']
+            _, created = GrupoAtendimento.objects.get_or_create(nome=nome)
 
-        # candidato.grupo_atendimento.set(grupo_atendimento)
+        candidato.grupo_atendimento.set(grupo_atendimento)
 
-        return HttpResponse('Segundo return')
+        resposta = apto(data_nascimento, covid, grupo_atendimento)
+
+        avisos = {"apto": resposta, "cadastro": 'Cadastro realizado com sucesso!' }
+
+        return render(request, 'login.html', avisos)
     
+def login_user(request):
+
+    if request.method == "GET":
+        return render(request, 'login.html')
+    
+
+    if request.method == "POST":
+        cpf = request.POST.get('cpf')
+        senha = request.POST.get('senha')
+
+        candidato = authenticate(request, username=cpf, password=senha)
+
+        if candidato is not None:
+            login(request, candidato)
+            return render(request, 'candidato_logado.html')
+        else:
+            return render(request, 'login.html', {"erro_login": 'CPF ou senha inválidos!'})
+        
+
+def logout_user(request):
+    logout(request)
+    redirect('login')
+
+def pagina_candidato(request):
+    render(request, 'canidato_logado.html')
+          
 
