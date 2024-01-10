@@ -3,6 +3,8 @@ import xmltodict
 from django.utils import timezone
 from datetime import datetime
 
+def calcular_idade(data_nascimento):
+    return (timezone.now().date() - data_nascimento).days // 365
 
 def carregar_grupos_atendimento():
     # import ipdb
@@ -19,7 +21,7 @@ def carregar_grupos_atendimento():
 
 def apto(data_nascimento, covid, grupo_atendimento):
     data_nascimento = datetime.strptime(data_nascimento, "%Y-%m-%d").date()
-    idade = (timezone.now().date() - data_nascimento).days // 365
+    idade = calcular_idade(data_nascimento)
     if idade < 18:
         return  'Você não está apto para participar da pesquisa.'  
     if covid == 'True':

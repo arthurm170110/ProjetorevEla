@@ -1,11 +1,66 @@
-{% extends "base.html" %}
+{% extends "base_autenticado.html" %}
 {% load static %}
 
 {% block 'head' %}
-    <link rel="stylesheet" href="{% static 'candidato/css/cadastro.css' %}">
+    <title>Meu Perfil</title>
 {% endblock %}
 
 {% block 'dashboard' %}
-<h1>Página logada</h1>
+
+<div class="container mt-5">
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">Nome: {{nome}}</li>
+                        <li class="list-group-item">Data de Nascimeto: {{data_nascimento}}</li>
+                        <li class="list-group-item">Idade: {{idade}} anos</li>
+                        <li class="list-group-item">CPF: {{cpf}}</li>
+                        <li class="list-group-item">Apto: {%if apto %}Sim{% else %}Não{% endif %}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Meu Perfil</title>
+    <!-- Adicione o link para o Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">Nome: {{nome}}</li>
+                        <li class="list-group-item">Data de Nascimeto: {{data_nascimento}}</li>
+                        <li class="list-group-item">Idade: {{idade}} anos</li>
+                        <li class="list-group-item">CPF: {{cpf}}</li>
+                        <li class="list-group-item">Apto: {%if apto %}Sim{% else %}Não{% endif %}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Adicione o link para o Bootstrap JS e o jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

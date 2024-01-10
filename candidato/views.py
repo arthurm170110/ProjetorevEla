@@ -4,14 +4,17 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from .utils import carregar_grupos_atendimento, apto
+from .utils import carregar_grupos_atendimento, apto, calcular_idade
 from .validators import cadastro_valido
 
 from .models import Candidato, GrupoAtendimento
 
 
 def paginainicial(request):
-    return render(request, 'paginainicial.html')
+    if request.method == "GET":
+        if not request.user.is_authenticated:
+            return render(request, 'paginainicial.html')
+        return redirect('perfil')
 
 
 def candidatos(request):
@@ -74,7 +77,8 @@ def candidatos(request):
         avisos = {"apto": resposta, "cadastro": 'Cadastro realizado com sucesso!' }
 
         return render(request, 'login.html', avisos)
-    
+
+
 def login_user(request):
 
     if request.method == "GET":
@@ -89,16 +93,77 @@ def login_user(request):
 
         if candidato is not None:
             login(request, candidato)
-            return render(request, 'candidato_logado.html')
+
+            id = request.user.id
+
+            usuario = Candidato.objects.get(id=id)
+            
+            grupoAtendimento = []
+
+            nome = usuario.nome
+            data_nascimeto = usuario.data_nascimento
+            idade = calcular_idade(data_nascimeto)
+            cpf = request.user.username
+
+            for grupo in usuario.grupo_atendimento.all():
+                grupoAtendimento.append(grupo.id)
+                
+            apitidao = apto(data_nascimeto.strftime("%Y-%m-%d"), str(usuario.covid), grupoAtendimento)
+
+            if "não" in apitidao:
+                apitidao = False
+            else:
+                apitidao = True
+
+            candidato = {
+                "nome": nome,
+                "data_nascimento": data_nascimeto,
+                "idade": idade,
+                "cpf": cpf,
+                "apto": apitidao
+            }
+            return render(request, 'candidato_logado.html', candidato)
         else:
             return render(request, 'login.html', {"erro_login": 'CPF ou senha inválidos!'})
         
 
 def logout_user(request):
     logout(request)
-    redirect('login')
+    return redirect('login')
 
+
+@login_required
 def pagina_candidato(request):
-    render(request, 'canidato_logado.html')
+    if request.method == "GET":
+        id = request.user.id
+
+        usuario = Candidato.objects.get(id=id)
+        
+        grupoAtendimento = []
+
+        nome = usuario.nome
+        data_nascimeto = usuario.data_nascimento
+        idade = calcular_idade(data_nascimeto)
+        cpf = request.user.username
+
+        for grupo in usuario.grupo_atendimento.all():
+            grupoAtendimento.append(grupo.id)
+            
+        apitidao = apto(data_nascimeto.strftime("%Y-%m-%d"), str(usuario.covid), grupoAtendimento)
+
+        if "não" in apitidao:
+            apitidao = False
+        else:
+            apitidao = True
+
+        candidato = {
+            "nome": nome,
+            "data_nascimento": data_nascimeto,
+            "idade": idade,
+            "cpf": cpf,
+            "apto": apitidao
+        }
+
+        return render(request, 'candidato_logado.html', candidato)
           
 
