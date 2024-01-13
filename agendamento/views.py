@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from candidato.utils import carregar_informacoes
 from .utils import *
-from django.http import HttpResponse
 
 from .models import Agendamento, Horario, Estabelecimento
 from candidato.models import Candidato 
@@ -66,6 +65,28 @@ def cadastro_agendamento(request):
                         horario = horario
                     )
 
-                    return HttpResponse("Agendamento realizado com sucesso!")
+                    dados = {
+                        "mensagem_sucesso": 'Agendamento realizado com sucesso!',
+                        "apto": informacoes['apto'],
+                        "agendamentos": carregar_agendamentos(usuario)
+
+                    }
+
+                    return render(request, 'list_agendamentos.html', dados)
                 else:
-                    return HttpResponse("As vagas já foram todas preenchidas")
+                    return render(request, 'agendamento.html', {"mensagem_erro": 'As vagas já foram todas preenchidas', "estabelecimentos": lista_estabelecimento, "apto": informacoes['apto']})
+                
+
+@login_required
+def lista_agendamento(request):
+    
+    usuario = request.user
+    informacoes = carregar_informacoes(usuario)
+
+    dados = {
+        "apto": informacoes['apto'],
+        "agendamentos": carregar_agendamentos(usuario)
+        
+    }
+
+    return render(request, 'list_agendamentos.html', dados)

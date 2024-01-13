@@ -1,0 +1,46 @@
+{% extends "base_autenticado.html" %}
+{% load static %}
+
+
+{% block 'dashboard' %}
+<div class="container mt-4">
+    {% csrf_token %}
+    <br>
+    <br>
+    <br>
+    <h2>Listagem de Agendamentos</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                
+                <th>Código do Estabelecimento</th>
+                <th>Nome do Estabelecimento</th>
+                <th>Dia da semana</th>
+                <th>Data</th>
+                <th>Hora</th>
+                <th>Passou do Horário</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if agendamentos%}
+                {% for agendamento in agendamentos %}
+                    <tr>
+                        <td>{{agendamento.cnes}}</td>
+                        <td>{{agendamento.estabelecimento}}</td>
+                        <td>{{agendamento.dia_semana}}</td>
+                        <td>{{agendamento.data}}</td>
+                        <td>{{agendamento.hora}}</td>
+                        <td>{{agendamento.passou_hora}}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+{% endblock %}

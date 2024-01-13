@@ -2,7 +2,15 @@
 {% load static %}
 
 
-{% block 'body' %}
+{% block 'dashboard' %}
+{% if mensagem_erro %}
+        <br>
+        <br>
+        <br>
+        <div class="alert alert-danger" role="alert">
+            {{mensagem_erro}}
+        </div>
+{% endif %}
 <div class="container">
     <div class="row">
         <div class="col-md card-dashboard" >

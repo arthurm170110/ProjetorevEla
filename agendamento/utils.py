@@ -3,6 +3,7 @@ import xmltodict
 
 from candidato.models import Candidato
 from django.utils import timezone
+from datetime import datetime
 
 
 def carregar_estabelecimentos():
@@ -50,3 +51,44 @@ def verifica_data(data):
         return 'Esta data não está entre Quarta e Sábado!'
     if data < timezone.now().date():
         return 'Só é possível agendamento de datas futuras.'
+    
+
+def buscar_dia_semana(data):
+    dias_semana = ['Segunda-Feira', 'Terça-Feira', ' Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sabádo', 'Domingo']
+    dia = data.weekday()
+    return dias_semana[dia]
+
+
+def expirou_horario(data, hora):
+    if data < timezone.now().date():
+        return 'Sim'
+    elif data == timezone.now().date():
+        hora = datetime.strptime(hora, "%H:%M").time()
+        if hora > datetime.now().time():
+            return 'Sim'
+        else:
+            return 'Não'
+    else:
+        return 'Não'
+
+
+def carregar_agendamentos(usuario):
+
+    dados = []
+
+    id = usuario.id
+    candidato = Candidato.objects.get(id=id)
+    lista_agendamentos = candidato.agendamentos.all()
+
+
+    for agendamento in lista_agendamentos:
+        dados.append({
+            'cnes': agendamento.estabelecimento.cnes,
+            'estabelecimento': agendamento.estabelecimento.nome,
+            'dia_semana': buscar_dia_semana(agendamento.horario.data),
+            'data': agendamento.horario.data.strftime("%d/%m/%Y"),
+            'hora': datetime.strptime(agendamento.horario.horas,"%H").time(),
+            'passou_hora': expirou_horario(agendamento.horario.data, agendamento.horario.horas)
+        })
+    
+    return dados
