@@ -16,10 +16,10 @@ def paginainicial(request):
 
 
 def candidatos(request):
-    dicionario = carregar_grupos_atendimento()
+    
 
     if request.method == "GET":
-        
+        dicionario = carregar_grupos_atendimento()
         grupos = dicionario['grupos']
         return render(request, 'candidato.html', grupos)
     
@@ -37,6 +37,7 @@ def candidatos(request):
 
 
         if validacao:
+            dicionario = carregar_grupos_atendimento()
             grupos = dicionario['grupos']['grupoatendimento']
             dados = {
                 "mensagens_de_erro": validacao,
@@ -61,7 +62,8 @@ def candidatos(request):
         )
 
         candidato.save()
-
+        dicionario = carregar_grupos_atendimento()
+        grupos = dicionario['grupos']['grupoatendimento']
         for grupo in grupos:
             nome = grupo['nome']
             GrupoAtendimento.objects.get_or_create(nome=nome)

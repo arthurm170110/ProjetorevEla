@@ -1,0 +1,59 @@
+{% extends "base_admin_autenticado.html" %}
+{% load static %}
+
+
+{% block 'dashboard' %}
+{% if mensagem_sucesso %}
+        <br>
+        <br>
+        <br>
+        <div class="alert alert-success" role="alert">
+            {{mensagem_sucesso}}
+        </div>
+{% endif %}
+{% if mensagem_erro %}
+    <br>
+    <br>
+    <br>
+    <div class="alert alert-danger" role="alert">
+        {{mensagem_erro}}
+    </div>
+{% endif %}
+<div class="container mt-4">
+    {% csrf_token %}
+    {% if mensagem_sucesso %}
+    {% else %}
+        <br>
+        <br>
+    {% endif %}
+    {% if mensagem_erro %}
+    {% else %}
+        <br>
+        <br>
+    {% endif %}
+    <h2>Listagem de Estabelecimentos</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Código do Estabelecimento</th>
+                <th>Nome do Estabelecimento</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for estabelecimento in estabelecimentos %}
+                <tr>
+                    <td>{{estabelecimento.co_cnes}}</td>
+                    <td>{{estabelecimento.no_fantasia}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+{% endblock %}

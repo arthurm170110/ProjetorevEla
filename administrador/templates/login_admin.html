@@ -1,0 +1,48 @@
+{% extends "base_admin.html" %}
+{% load static %}
+
+{% block 'head' %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Página de Login Admin</title>
+    <link rel="stylesheet" href="{% static 'candidato/css/candidato.css' %}">
+{% endblock %}
+
+{% block 'dashboard' %}
+    {% if mensagem_erro %}
+        <br>
+        <br>
+        <br>
+        <div class="alert alert-danger" role="alert">
+            {{mensagem_erro}}
+        </div>
+    {% endif %}
+    <form action="{% url 'login_admin' %}" method="POST">
+        {% csrf_token %}
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="text-center card text-white bg-dark mb-3">Login</h3>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="cpf" style="color: black;">CPF:</label>
+                                    <input type="text" class="form-control" placeholder="___.___.___-__" id="cpf"  name="cpf" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password" style="color: black">Senha:</label>
+                                    <input type="password" class="form-control" id="password" name="senha" required>
+                                </div>
+                                <button type="submit" style="color: white;" class="btn bg-dark btn-block" value="login">Entrar</button>
+                                <div class="d-flex justify-content-center">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
