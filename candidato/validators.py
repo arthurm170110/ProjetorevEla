@@ -67,4 +67,3 @@ def cadastro_valido(cpf, data_nascimento, senha, confirma_senha):
     
     return mensagens_erro
     
-   

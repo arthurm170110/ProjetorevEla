@@ -1,0 +1,40 @@
+{% extends "base_autenticado.html" %}
+{% load static %}
+
+
+{% block 'body' %}
+<div class="container">
+    <div class="row">
+        <div class="col-md card-dashboard" >
+            <p class="text-card">Agendamento</p>
+        </div>
+    </div>
+    <div class="cadastrar-agendamento">
+        <form action="{% url 'agendamentos' %}" method="POST">
+            {% csrf_token %}
+            <br>
+            <div class="form-group">
+                <label for="estabelecimentos">Selecione um estabelecimento*:</label>
+                <select class="form-control" name="estabelecimento" id="estabelecimento" required>
+                    {% for estabelecimento in estabelecimentos %}
+                        <option value="{{ estabelecimento.co_cnes }}">{{ estabelecimento.co_cnes }}-{{ estabelecimento.no_fantasia }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <p>Data do Agendamento*:</p>
+            <input type="date" {% if data_invalida %}style="border-color: red;"{% endif %}class="form-control" placeholder="dd/mm/aaaa" name="data" id="data"required>
+            {% if data_invalida %}
+                <br>
+                <div class="alert alert-danger" role="alert">
+                    {{data_invalida}}
+                </div>
+            {% endif %}
+            <br>
+            <input type="submit" value="Agendar" class="btn btn-lg btn-block btn-primary">
+        </form>
+    </div>
+</div>
+<script src="{% static 'agendamento/js/agendamento.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+{% endblock %}
+

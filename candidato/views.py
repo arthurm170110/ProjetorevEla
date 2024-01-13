@@ -1,10 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from .utils import carregar_grupos_atendimento, apto, calcular_idade
+from .utils import carregar_grupos_atendimento, apto, carregar_informacoes
 from .validators import cadastro_valido
 
 from .models import Candidato, GrupoAtendimento
@@ -18,8 +16,10 @@ def paginainicial(request):
 
 
 def candidatos(request):
+    dicionario = carregar_grupos_atendimento()
+
     if request.method == "GET":
-        dicionario = carregar_grupos_atendimento()
+        
         grupos = dicionario['grupos']
         return render(request, 'candidato.html', grupos)
     
@@ -37,7 +37,6 @@ def candidatos(request):
 
 
         if validacao:
-            dicionario = carregar_grupos_atendimento()
             grupos = dicionario['grupos']['grupoatendimento']
             dados = {
                 "mensagens_de_erro": validacao,
@@ -63,12 +62,9 @@ def candidatos(request):
 
         candidato.save()
 
-        dicionario = carregar_grupos_atendimento()
-        grupos = dicionario['grupos']['grupoatendimento']
-
         for grupo in grupos:
             nome = grupo['nome']
-            _, created = GrupoAtendimento.objects.get_or_create(nome=nome)
+            GrupoAtendimento.objects.get_or_create(nome=nome)
 
         candidato.grupo_atendimento.set(grupo_atendimento)
 
@@ -93,36 +89,9 @@ def login_user(request):
 
         if candidato is not None:
             login(request, candidato)
-
-            id = request.user.id
-
-            usuario = Candidato.objects.get(id=id)
-            
-            grupoAtendimento = []
-
-            nome = usuario.nome
-            data_nascimeto = usuario.data_nascimento
-            idade = calcular_idade(data_nascimeto)
-            cpf = request.user.username
-
-            for grupo in usuario.grupo_atendimento.all():
-                grupoAtendimento.append(grupo.id)
-                
-            apitidao = apto(data_nascimeto.strftime("%Y-%m-%d"), str(usuario.covid), grupoAtendimento)
-
-            if "não" in apitidao:
-                apitidao = False
-            else:
-                apitidao = True
-
-            candidato = {
-                "nome": nome,
-                "data_nascimento": data_nascimeto,
-                "idade": idade,
-                "cpf": cpf,
-                "apto": apitidao
-            }
-            return render(request, 'candidato_logado.html', candidato)
+        
+            informacoes = carregar_informacoes(request.user)
+            return render(request, 'candidato_logado.html', informacoes)
         else:
             return render(request, 'login.html', {"erro_login": 'CPF ou senha inválidos!'})
         
@@ -135,35 +104,7 @@ def logout_user(request):
 @login_required
 def pagina_candidato(request):
     if request.method == "GET":
-        id = request.user.id
+        informacoes = carregar_informacoes(request.user)
 
-        usuario = Candidato.objects.get(id=id)
+        return render(request, 'candidato_logado.html', informacoes)
         
-        grupoAtendimento = []
-
-        nome = usuario.nome
-        data_nascimeto = usuario.data_nascimento
-        idade = calcular_idade(data_nascimeto)
-        cpf = request.user.username
-
-        for grupo in usuario.grupo_atendimento.all():
-            grupoAtendimento.append(grupo.id)
-            
-        apitidao = apto(data_nascimeto.strftime("%Y-%m-%d"), str(usuario.covid), grupoAtendimento)
-
-        if "não" in apitidao:
-            apitidao = False
-        else:
-            apitidao = True
-
-        candidato = {
-            "nome": nome,
-            "data_nascimento": data_nascimeto,
-            "idade": idade,
-            "cpf": cpf,
-            "apto": apitidao
-        }
-
-        return render(request, 'candidato_logado.html', candidato)
-          
-
