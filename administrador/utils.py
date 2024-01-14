@@ -26,7 +26,9 @@ def carregar_grafico_barra():
     plt.bar(estabelecimentos, agendamentos_por_estabelecimento)
     plt.xticks(rotation=90)
     plt.tight_layout()
-    return get_graph() 
+    graph = get_graph()
+    plt.clf()
+    return graph 
 
 
 def carregar_grafico_pizza():
@@ -40,4 +42,6 @@ def carregar_grafico_pizza():
         else:
             inaptos = inaptos + 1
     plt.pie([aptos, inaptos], labels=['Aptos: ' + str(aptos), 'Inaptos: ' + str(inaptos)], autopct='%1.1f%%')
-    return get_graph()
+    graph = get_graph()
+    plt.clf()
+    return graph
