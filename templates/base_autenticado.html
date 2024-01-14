@@ -26,6 +26,9 @@
             <a {% if apto %}class="nav-link active"{% else %}class="nav-link disabled"{% endif %} href="{% url 'agendamentos' %}">Agendar</a>
           </li>
           <li class="nav-item active">
+            <a class="nav-link" href="{% url 'listagem' %}">Agendamentos<span class="sr-only">(página atual)</span></a>
+          </li>
+          <li class="nav-item active">
             <a class="nav-link" href="{% url 'login_admin' %}">Área Administrativa<span class="sr-only">(página atual)</span></a>
           </li>
           <li class="nav-item active">

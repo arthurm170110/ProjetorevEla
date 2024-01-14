@@ -101,7 +101,6 @@ def disponibilidade_estabelecimento(estabelecimento, usuario):
     try:
         estabelecimentos = Agendamento.objects.filter(estabelecimento_id=estabelecimento)
     except Exception as e:
-        # Tratamento de exceção, se necessário
         print(f"Erro ao buscar agendamentos: {e}")
         return []
     
@@ -119,7 +118,7 @@ def disponibilidade_estabelecimento(estabelecimento, usuario):
     mes_atual = datetime.now().month
     #Range de agendamento de 2 meses
     mes_seguinte = mes_atual + 1
-    datas = obter_dias_quarta_a_sabado(ano_atual, mes_atual) + obter_dias_quarta_a_sabado(ano_atual, mes_seguinte)
+    datas = buscar_datas_quarta_a_sabado(ano_atual, mes_atual) + buscar_datas_quarta_a_sabado(ano_atual, mes_seguinte)
 
     for data in datas:
         str_data = data
@@ -130,15 +129,13 @@ def disponibilidade_estabelecimento(estabelecimento, usuario):
     return datas
 
 
-def obter_dias_quarta_a_sabado(ano, mes):
-    # Retorna uma matriz de listas onde cada lista representa uma semana do mês
+def buscar_datas_quarta_a_sabado(ano, mes):
+    
     semanas = calendar.monthcalendar(ano, mes)
     datas = []
-    # Itera sobre cada semana do mês
+    
     for semana in semanas:
-        # Itera sobre cada dia da semana
         for dia in semana:
-            # Se o dia estiver dentro do mês, imprima a data
             if dia != 0:
                 data = f'{ano}-{mes:02d}-{dia:02d}'
                 if not verifica_data(string_to_date(data)):

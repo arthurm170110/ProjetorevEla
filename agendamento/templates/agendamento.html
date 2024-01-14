@@ -1,6 +1,10 @@
 {% extends "base_autenticado.html" %}
 {% load static %}
 
+{% block 'head' %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Cadastro de Agendamentos</title>
+{% endblock %}
 
 {% block 'dashboard' %}
 {% if mensagem_erro %}
@@ -62,7 +66,7 @@
 
         divData.style.display = 'block';
 
-        fetch('/agendamento/obter-datas-disponiveis/' + estabelecimentoId+ '/')
+        fetch('/agendamento/carregar_datas_disponiveis/' + estabelecimentoId+ '/')
             .then(response => response.json())
             .then(data => {
                 datasContainer.innerHTML = '';
@@ -99,24 +103,19 @@
     function selecionarData(item) {
         var elemento = document.querySelector('.data[data-item="' + item + '"]');
         if (elemento) {
-            // Desmarca todos os itens
+            
             document.querySelectorAll('.data').forEach(function(item) {
                 item.classList.remove('active');
                 });
 
-                // Marca apenas o item clicado
                 elemento.classList.add('active');
 
-                // Atualiza o valor do campo hidden com o item selecionado
                 document.getElementById('data_input').value = item;
         }
     }
 
     function converterData(dataNoFormatoOriginal) {
-        // Dividir a data usando o caractere '-' como delimitador
         var partesData = dataNoFormatoOriginal.split('-');
-
-        // Inverter a ordem das partes da data
         var dataFormatada = partesData.reverse().join('-');
 
 

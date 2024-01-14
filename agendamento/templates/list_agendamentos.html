@@ -1,13 +1,35 @@
 {% extends "base_autenticado.html" %}
 {% load static %}
 
+{% block 'head' %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Lista de Agendamentos</title>
+{% endblock %}
+
+
+
 
 {% block 'dashboard' %}
 <div class="container mt-4">
     {% csrf_token %}
-    <br>
-    <br>
-    <br>
+    {% if mensagem_sucesso %}
+        <br>
+        <div class="alert alert-success" role="alert">
+            {{mensagem_sucesso}}
+        </div>
+    {% else %}
+        <br>
+        <br>
+    {% endif %}
+    {% if mensagem_erro %}
+        <br>
+        <div class="alert alert-danger" role="alert">
+            {{mensagem_erro}}
+        </div>
+    {% else %}
+        <br>
+        <br>
+    {% endif %}
     <h2>Listagem de Agendamentos</h2>
 
     <table class="table">

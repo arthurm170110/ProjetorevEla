@@ -82,18 +82,21 @@ def lista_agendamento(request):
     
     usuario = request.user
     informacoes = carregar_informacoes(usuario)
+    agendamentos = carregar_agendamentos(usuario)
 
     dados = {
         "apto": informacoes['apto'],
-        "agendamentos": carregar_agendamentos(usuario)
-        
+        "agendamentos": agendamentos    
     }
+
+    if len(agendamentos) == 0:
+        dados["mensagem_erro"] = "Você não possui agendamentos."
 
     return render(request, 'list_agendamentos.html', dados)
 
 
 @login_required
-def obter_datas_disponiveis_view(request, estabelecimento):
+def carregar_datas_disponiveis_view(request, estabelecimento):
     estab = Estabelecimento.objects.get(cnes=estabelecimento)
     datas_disponiveis = disponibilidade_estabelecimento(estab.id, request.user)
 
