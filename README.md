@@ -1,6 +1,6 @@
 # ProjetorevEla
 
-    A covid-19 foi uma das maiores pandemias da história recente da humanidade causada
+    _A covid-19 foi uma das maiores pandemias da história recente da humanidade causada
 pelo novo coronavírus (SARS-CoV-2). Trata-se de uma infecção respiratória aguda
 potencialmente grave e de distribuição global, que possui elevada transmissibilidade
 entre as pessoas por meio de gotículas respiratórias ou contato com objetos e superfícies
@@ -22,7 +22,7 @@ novo teste de detecção da covid-19: LAIS-010.
     Diante disso, o projeto tem como objetivo propor uma solução para agendamento online
 para triagem de pessoas candidatas a um novo tipo de teste para detecção da covid-19 e
 suas variantes, por meio de uma página interna com dados dos perfis das pessoas que
-se candidataram por faixa etária, por município e por antecedentes da doença.
+se candidataram por faixa etária, por município e por antecedentes da doença._
 
 ### Link - base
 
