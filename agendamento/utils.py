@@ -1,9 +1,11 @@
 import requests
 import xmltodict
-
+import calendar
 from candidato.models import Candidato
 from django.utils import timezone
 from datetime import datetime
+from .models import Agendamento
+from candidato.utils import string_to_date, carregar_informacoes
 
 
 def carregar_estabelecimentos():
@@ -92,3 +94,54 @@ def carregar_agendamentos(usuario):
         })
     
     return dados
+
+
+def disponibilidade_estabelecimento(estabelecimento, usuario):
+
+    try:
+        estabelecimentos = Agendamento.objects.filter(estabelecimento_id=estabelecimento)
+    except Exception as e:
+        # Tratamento de exceção, se necessário
+        print(f"Erro ao buscar agendamentos: {e}")
+        return []
+    
+    candidato = carregar_informacoes(usuario)
+    hora = hora_por_idade(candidato['idade'])
+
+    datas_indisponiveis = []
+    for agendamento in estabelecimentos:
+        horario = agendamento.horario
+        if horario.horas == hora:
+            if horario.vagas == 0:
+                datas_indisponiveis.append(horario.data)
+    
+    ano_atual = datetime.now().year
+    mes_atual = datetime.now().month
+    #Range de agendamento de 2 meses
+    mes_seguinte = mes_atual + 1
+    datas = obter_dias_quarta_a_sabado(ano_atual, mes_atual) + obter_dias_quarta_a_sabado(ano_atual, mes_seguinte)
+
+    for data in datas:
+        str_data = data
+        data = string_to_date(data)
+        if data in datas_indisponiveis:
+            
+            datas.remove(str_data)
+    return datas
+
+
+def obter_dias_quarta_a_sabado(ano, mes):
+    # Retorna uma matriz de listas onde cada lista representa uma semana do mês
+    semanas = calendar.monthcalendar(ano, mes)
+    datas = []
+    # Itera sobre cada semana do mês
+    for semana in semanas:
+        # Itera sobre cada dia da semana
+        for dia in semana:
+            # Se o dia estiver dentro do mês, imprima a data
+            if dia != 0:
+                data = f'{ano}-{mes:02d}-{dia:02d}'
+                if not verifica_data(string_to_date(data)):
+                    datas.append(data)
+    
+    return datas

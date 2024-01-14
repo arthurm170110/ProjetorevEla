@@ -23,26 +23,118 @@
             <br>
             <div class="form-group">
                 <label for="estabelecimentos">Selecione um estabelecimento*:</label>
-                <select class="form-control" name="estabelecimento" id="estabelecimento" required>
+                <select class="form-control" name="estabelecimento" id="estabelecimento">
                     {% for estabelecimento in estabelecimentos %}
                         <option value="{{ estabelecimento.co_cnes }}">{{ estabelecimento.co_cnes }}-{{ estabelecimento.no_fantasia }}</option>
                     {% endfor %}
                 </select>
             </div>
-            <p>Data do Agendamento*:</p>
-            <input type="date" {% if data_invalida %}style="border-color: red;"{% endif %}class="form-control" placeholder="dd/mm/aaaa" name="data" id="data"required>
-            {% if data_invalida %}
-                <br>
-                <div class="alert alert-danger" role="alert">
-                    {{data_invalida}}
+            <div class="form-group">
+                <div class="container" id="div_data" style="display: none;">
+                    <label for="horario">Selecione uma Data*:</label>
+                    <div class="d-flex flex-wrap" id="datas_disponiveis">
+                    </div>
+                    <input type="hidden" name="data" id="data_input">
                 </div>
-            {% endif %}
-            <br>
+            </div>
+            <div class="form-group">
+                <div id="div_hora" style="display: none;">
+                    <label for="horario">Horario*:</label>
+                    <div class="alert alert-info" role="alert" id="itens">   
+                    </div>
+                </div>
+            </div>
             <input type="submit" value="Agendar" class="btn btn-lg btn-block btn-primary">
         </form>
     </div>
 </div>
-<script src="{% static 'agendamento/js/agendamento.js' %}"></script>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    
+    var estabelecimentoSelect = document.getElementById('estabelecimento');
+    var datasContainer = document.getElementById('datas_disponiveis');
+    var divData = document.getElementById('div_data')
+    var horasContainer = document.getElementById('itens');
+    var divHora = document.getElementById('div_hora')
+
+    estabelecimentoSelect.addEventListener('change', function () {
+        var estabelecimentoId = estabelecimentoSelect.value;
+        estabelecimentoId = estabelecimentoId.slice(0, 7)
+
+        divData.style.display = 'block';
+
+        fetch('/agendamento/obter-datas-disponiveis/' + estabelecimentoId+ '/')
+            .then(response => response.json())
+            .then(data => {
+                datasContainer.innerHTML = '';
+
+                data.datas_disponiveis.forEach(date => {
+                    var link = document.createElement('a');
+                    link.className = 'list-group-item list-group-item-action rounded-pill col-md-3 data';
+                    link.setAttribute('data-item', date);
+                    link.setAttribute('id', 'data')
+                    link.onclick = function () {
+                        selecionarData(date);
+                        ApresentarHora({{ hora }});
+                    };
+                    link.textContent = converterData(date);
+                    datasContainer.appendChild(link);
+                });
+            });
+            
+    });
+
+    function ApresentarHora() {
+    divHora.style.display = 'block';
+    fetch('/agendamento/obter_hora/')
+        .then(response => response.json())
+        .then(data => {
+            horasContainer.innerHTML = '';
+            var horaElement = document.createElement('span');
+            horaElement.textContent = 'Para a sua faixa etária só está disponível o horário de ' + data.hora + ':'  + '00.';
+            horasContainer.appendChild(horaElement);
+        });
+}
+
+
+    function selecionarData(item) {
+        var elemento = document.querySelector('.data[data-item="' + item + '"]');
+        if (elemento) {
+            // Desmarca todos os itens
+            document.querySelectorAll('.data').forEach(function(item) {
+                item.classList.remove('active');
+                });
+
+                // Marca apenas o item clicado
+                elemento.classList.add('active');
+
+                // Atualiza o valor do campo hidden com o item selecionado
+                document.getElementById('data_input').value = item;
+        }
+    }
+
+    function converterData(dataNoFormatoOriginal) {
+        // Dividir a data usando o caractere '-' como delimitador
+        var partesData = dataNoFormatoOriginal.split('-');
+
+        // Inverter a ordem das partes da data
+        var dataFormatada = partesData.reverse().join('-');
+
+
+
+        return dataFormatada + '  ' + obterDiaDaSemana(dataNoFormatoOriginal);
+    }
+
+    function obterDiaDaSemana(dataString) {
+        var data = new Date(dataString);
+
+        var diasDaSemana = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
+
+        var numeroDiaSemana = data.getDay();
+
+        var nomeDiaSemana = diasDaSemana[numeroDiaSemana];
+
+        return nomeDiaSemana;
+    }
+</script>
 {% endblock %}
 

@@ -7,7 +7,7 @@ HORAS_DISPONIVEIS = [('13', '13'), ('14', '14'), ('15', '15'), ('16', '16'), ('1
 
 class Estabelecimento(models.Model):
     nome = models.CharField(max_length=120)
-    cnes = models.CharField(max_length=10)
+    cnes = models.CharField(max_length=10, unique=True)
 
     def __str__(self) -> str:
         return str(self.nome)

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from candidato.utils import carregar_informacoes
 from .utils import *
-
+from django.http import JsonResponse
 from .models import Agendamento, Horario, Estabelecimento
 from candidato.models import Candidato 
 from candidato.utils import string_to_date
@@ -90,3 +90,21 @@ def lista_agendamento(request):
     }
 
     return render(request, 'list_agendamentos.html', dados)
+
+
+@login_required
+def obter_datas_disponiveis_view(request, estabelecimento):
+    estab = Estabelecimento.objects.get(cnes=estabelecimento)
+    datas_disponiveis = disponibilidade_estabelecimento(estab.id, request.user)
+
+    response_data = {'datas_disponiveis': datas_disponiveis}
+    return JsonResponse(response_data)
+
+
+@login_required
+def obter_hora_view(request):
+    usuario = request.user
+    informacoes = carregar_informacoes(usuario)
+    hora = hora_por_idade(informacoes['idade'])
+
+    return JsonResponse({"hora": hora})
