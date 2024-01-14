@@ -1,14 +1,16 @@
 # ProjetorevEla
 
-_A covid-19 foi uma das maiores pandemias da história recente da humanidade causada
+    A covid-19 foi uma das maiores pandemias da história recente da humanidade causada
 pelo novo coronavírus (SARS-CoV-2). Trata-se de uma infecção respiratória aguda
 potencialmente grave e de distribuição global, que possui elevada transmissibilidade
 entre as pessoas por meio de gotículas respiratórias ou contato com objetos e superfícies
-contaminadas_.
-Desde o primeiro caso (em 31 de dezembro de 2019) até 21 de dezembro de 2023, foram
+contaminadas.
+
+    Desde o primeiro caso (em 31 de dezembro de 2019) até 21 de dezembro de 2023, foram
 registrados 699,9 milhões de casos e 6,91 milhões de óbitos no mundo. No Brasil, são
 38,1 milhões de casos e mais de 708 mil óbitos no mesmo período.
-Neste contexto, temos como principal problemática a obtenção de candidatos para uma
+
+    Neste contexto, temos como principal problemática a obtenção de candidatos para uma
 pesquisa que visa a avaliação de novos testes da covid-19 de um centro clínico,
 mantendo os gestores atualizados em tempo real do progresso da obtenção de
 candidatos aos testes, com indicadores relacionados à gestão. Os candidatos entram em
@@ -16,10 +18,11 @@ um processo de triagem, podendo ocorrer desdobramentos que os permitem seguir co
 o agendamento da testagem ou não. É importante que os candidatos aptos tenham como
 identificar os locais disponíveis em seu território para realização do estudo clínico para o
 novo teste de detecção da covid-19: LAIS-010.
-Diante disso, o projeto tem como objetivo propor uma solução para agendamento online
+
+    Diante disso, o projeto tem como objetivo propor uma solução para agendamento online
 para triagem de pessoas candidatas a um novo tipo de teste para detecção da covid-19 e
 suas variantes, por meio de uma página interna com dados dos perfis das pessoas que
-se candidataram por faixa etária, por município e por antecedentes da doença_.
+se candidataram por faixa etária, por município e por antecedentes da doença.
 
 ### Link - base
 
