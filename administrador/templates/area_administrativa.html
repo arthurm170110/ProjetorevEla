@@ -1,0 +1,33 @@
+{% extends "base_admin_autenticado.html" %}
+{% load static %}
+
+{% block 'dashboard' %}
+<div class="row">
+    <div class="col-12 text-center mb-4">
+        <div class="card">
+            <div class="card-header">
+                <br>
+                <br>
+                <br>
+                <h5 class="card-title">Gráfico de Barras</h5>
+            </div>
+            <div class="card-body">
+                <img src="data:image/png;base64,{{ grafico_barra }}" class="img-fluid" alt="Gráfico de Barras">
+            </div>
+        </div>
+    </div>
+    <div class="col-12 text-center">
+        <div class="card">
+            <div class="card-header">
+                <br>
+                <br>
+                <br>
+                <h5 class="card-title">Gráfico de Pizza</h5>
+            </div>
+            <div class="card-body">
+                <img src="data:image/png;base64,{{ grafico_pizza }}" class="img-fluid mx-auto d-block w-75" alt="Gráfico de Pizza">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

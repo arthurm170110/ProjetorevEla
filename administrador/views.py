@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import permission_required
 from candidato.models import Candidato
 from agendamento.models import Estabelecimento
 from agendamento.utils import carregar_estabelecimentos
+from .utils import carregar_grafico_barra, carregar_grafico_pizza
 
 
 def login_admin(request):
@@ -51,3 +52,12 @@ def lista_estabelecimentos(request):
 def logout_admin(request):
     logout(request)
     return redirect('login_admin')
+
+
+@permission_required('is_superuser')
+def area_administrativa(request):
+    if request.method == "GET":
+        grafico_barra = carregar_grafico_barra()
+        grafico_pizza = carregar_grafico_pizza()
+
+        return render(request, 'area_administrativa.html', {"grafico_barra": grafico_barra, "grafico_pizza": grafico_pizza})
