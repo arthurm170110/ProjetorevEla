@@ -16,6 +16,11 @@ def cadastro_agendamento(request):
     lista_estabelecimento = estabelecimentos['estabelecimentos']['estabelecimento']
 
     if request.method == "GET":
+        for estab in lista_estabelecimento:
+            nome = estab['no_fantasia']
+            cnes = estab['co_cnes']
+            
+            Estabelecimento.objects.get_or_create(nome=nome, cnes=cnes)
         dados = {
             'estabelecimentos': lista_estabelecimento,
             'apto': informacoes['apto']
